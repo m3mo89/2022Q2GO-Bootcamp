@@ -1,12 +1,12 @@
 package registry
 
 import (
-	"guillermotinoco.com/pokemonAPI/interface/controller"
-	ip "guillermotinoco.com/pokemonAPI/interface/presenter"
-	ir "guillermotinoco.com/pokemonAPI/interface/repository"
-	"guillermotinoco.com/pokemonAPI/usecase/interactor"
-	up "guillermotinoco.com/pokemonAPI/usecase/presenter"
-	ur "guillermotinoco.com/pokemonAPI/usecase/repository"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/interface/controller"
+	ip "github.com/m3mo89/2022Q2GO-Bootcamp/interface/presenter"
+	ir "github.com/m3mo89/2022Q2GO-Bootcamp/interface/repository"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/usecase/interactor"
+	up "github.com/m3mo89/2022Q2GO-Bootcamp/usecase/presenter"
+	ur "github.com/m3mo89/2022Q2GO-Bootcamp/usecase/repository"
 )
 
 func (r *registry) NewPokemonController() controller.PokemonController {
