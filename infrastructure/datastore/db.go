@@ -25,18 +25,26 @@ func NewDatabase(path string) Database {
 type database struct {
 	path    string
 	data    []*model.Pokemon
-	dataMap map[int]model.Pokemon
+	dataMap map[int]*model.Pokemon
 }
 
 func readData(path string) ([]*model.Pokemon, error) {
+	var records []*model.Pokemon
+
+	defer convertDataToMap(records)
+
 	file, err := os.Open(path)
+
+	defer func() {
+		err := file.Close()
+
+		log.Println(err)
+	}()
+
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
-	defer file.Close()
-
-	var records []*model.Pokemon
 
 	if err := gocsv.UnmarshalFile(file, &records); err != nil {
 		log.Println(err)
@@ -46,12 +54,14 @@ func readData(path string) ([]*model.Pokemon, error) {
 	return records, nil
 }
 
-func convertDataToMap(records []*model.Pokemon) map[int]model.Pokemon {
+func convertDataToMap(records []*model.Pokemon) (pokemons map[int]*model.Pokemon) {
 
-	pokemons := make(map[int]model.Pokemon)
+	if pokemons == nil {
+		pokemons = make(map[int]*model.Pokemon)
+	}
 
 	for _, value := range records {
-		pokemons[value.Id] = *value
+		pokemons[value.Id] = value
 	}
 
 	return pokemons
@@ -68,5 +78,5 @@ func (d *database) FindById(id int) (*model.Pokemon, error) {
 	if !ok {
 		return nil, errors.New("the pokemon was not found")
 	}
-	return &pokemon, nil
+	return pokemon, nil
 }
