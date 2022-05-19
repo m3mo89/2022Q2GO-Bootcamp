@@ -3,14 +3,18 @@ package repository
 import (
 	"github.com/m3mo89/2022Q2GO-Bootcamp/domain/model"
 	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/datastore"
-	"github.com/m3mo89/2022Q2GO-Bootcamp/usecase/repository"
 )
+
+type PokemonRepository interface {
+	FindAll() ([]*model.Pokemon, error)
+	FindById(id int) (*model.Pokemon, error)
+}
 
 type pokemonRepository struct {
 	db datastore.Database
 }
 
-func NewPokemonRepository(db datastore.Database) repository.PokemonRepository {
+func NewPokemonRepository(db datastore.Database) PokemonRepository {
 	return &pokemonRepository{db}
 }
 
