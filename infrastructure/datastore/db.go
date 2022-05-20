@@ -16,10 +16,10 @@ type Database interface {
 }
 
 func NewDatabase(path string) Database {
-	records, _ := readData(path)
-	recordsMap := convertDataToMap(records)
+	db := database{path: path}
+	db.readData()
 
-	return &database{path, records, recordsMap}
+	return &db
 }
 
 type database struct {
@@ -28,12 +28,12 @@ type database struct {
 	dataMap map[int]*model.Pokemon
 }
 
-func readData(path string) ([]*model.Pokemon, error) {
+func (d *database) readData() error {
 	var records []*model.Pokemon
 
-	defer convertDataToMap(records)
+	defer d.convertDataToMap()
 
-	file, err := os.Open(path)
+	file, err := os.Open(d.path)
 
 	defer func() {
 		err := file.Close()
@@ -43,28 +43,28 @@ func readData(path string) ([]*model.Pokemon, error) {
 
 	if err != nil {
 		log.Fatal(err)
-		return nil, err
+		return err
 	}
 
 	if err := gocsv.UnmarshalFile(file, &records); err != nil {
 		log.Println(err)
-		return nil, err
+		return err
 	}
 
-	return records, nil
+	d.data = records
+
+	return nil
 }
 
-func convertDataToMap(records []*model.Pokemon) (pokemons map[int]*model.Pokemon) {
+func (d *database) convertDataToMap() {
 
-	if pokemons == nil {
-		pokemons = make(map[int]*model.Pokemon)
-	}
+	pokemons := make(map[int]*model.Pokemon)
 
-	for _, value := range records {
+	for _, value := range d.data {
 		pokemons[value.Id] = value
 	}
 
-	return pokemons
+	d.dataMap = pokemons
 }
 
 func (d *database) FindAll() ([]*model.Pokemon, error) {
