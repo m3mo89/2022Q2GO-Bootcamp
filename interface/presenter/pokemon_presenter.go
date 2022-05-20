@@ -2,16 +2,13 @@ package presenter
 
 import (
 	"github.com/m3mo89/2022Q2GO-Bootcamp/domain/model"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/usecase/presenter"
 )
-
-type PokemonPresenter interface {
-	ResponsePokemons(p []*model.Pokemon) []*model.Pokemon
-}
 
 type pokemonPresenter struct {
 }
 
-func NewPokemonPresenter() PokemonPresenter {
+func NewPokemonPresenter() presenter.PokemonPresenter {
 	return &pokemonPresenter{}
 }
 
