@@ -3,12 +3,16 @@ package interactor
 import (
 	"github.com/m3mo89/2022Q2GO-Bootcamp/domain/model"
 	"github.com/m3mo89/2022Q2GO-Bootcamp/usecase/presenter"
-	"github.com/m3mo89/2022Q2GO-Bootcamp/usecase/repository"
 )
 
 type pokemonInteractor struct {
-	PokemonRepository repository.PokemonRepository
+	PokemonRepository PokemonRepository
 	PokemonPresenter  presenter.PokemonPresenter
+}
+
+type PokemonRepository interface {
+	FindAll() ([]*model.Pokemon, error)
+	FindById(id int) (*model.Pokemon, error)
 }
 
 type PokemonInteractor interface {
@@ -16,7 +20,7 @@ type PokemonInteractor interface {
 	GetById(id int) (*model.Pokemon, error)
 }
 
-func NewPokemonInteractor(r repository.PokemonRepository, p presenter.PokemonPresenter) PokemonInteractor {
+func NewPokemonInteractor(r PokemonRepository, p presenter.PokemonPresenter) PokemonInteractor {
 	return &pokemonInteractor{r, p}
 }
 
