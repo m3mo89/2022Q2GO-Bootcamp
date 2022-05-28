@@ -12,9 +12,9 @@ import (
 
 const apiUrl = "https://pokeapi.co/api/v2/"
 
-func GetPokemon(id int) (*model.Pokemon, error) {
+func GetPokemon(id int) (*model.PokemonApi, error) {
 
-	var pokemon *model.Pokemon
+	var pokemon *model.PokemonApi
 	pokemonId := strconv.Itoa(id)
 
 	endpoint := "pokemon/" + pokemonId
