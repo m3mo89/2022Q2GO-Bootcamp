@@ -29,12 +29,12 @@ func (*pokemonApi) GetPokemon(id int) (*model.PokemonApi, error) {
 
 	endpoint := "pokemon/" + pokemonId
 
-	resp, err := http.DefaultClient.Get(apiUrl + endpoint)
+	response, err := http.DefaultClient.Get(apiUrl + endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("unable to reach [%v]: %v", apiUrl, err)
 	}
 
-	content, err := ioutil.ReadAll(resp.Body)
+	content, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read response body: %v", err)
 	}
