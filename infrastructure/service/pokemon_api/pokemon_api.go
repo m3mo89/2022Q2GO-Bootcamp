@@ -12,7 +12,17 @@ import (
 
 const apiUrl = "https://pokeapi.co/api/v2/"
 
-func GetPokemon(id int) (*model.PokemonApi, error) {
+type PokemonApi interface {
+	GetPokemon(id int) (*model.PokemonApi, error)
+}
+
+type pokemonApi struct{}
+
+func NewPokemonApi() PokemonApi {
+	return &pokemonApi{}
+}
+
+func (*pokemonApi) GetPokemon(id int) (*model.PokemonApi, error) {
 
 	var pokemon *model.PokemonApi
 	pokemonId := strconv.Itoa(id)
