@@ -12,6 +12,7 @@ type PokemonRepository interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
 	FindRemoteById(id int) (*model.RemotePokemon, error)
+	Save() (*model.Pokemon, error)
 }
 
 type PokemonPresenter interface {
