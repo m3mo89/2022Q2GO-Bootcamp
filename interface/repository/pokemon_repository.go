@@ -7,12 +7,12 @@ import (
 type PokemonRepository interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
-	FindRemoteById(id int) (*model.RemotePokemon, error)
+	FindRemoteById(id int) (*model.Pokemon, error)
 	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
 type PokemonService interface {
-	FindRemoteById(id int) (*model.RemotePokemon, error)
+	FindRemoteById(id int) (*model.Pokemon, error)
 }
 
 type Database interface {
@@ -50,7 +50,7 @@ func (pr *pokemonRepository) FindById(id int) (*model.Pokemon, error) {
 	return pokemon, nil
 }
 
-func (pr *pokemonRepository) FindRemoteById(id int) (*model.RemotePokemon, error) {
+func (pr *pokemonRepository) FindRemoteById(id int) (*model.Pokemon, error) {
 	pokemon, err := pr.service.FindRemoteById(id)
 
 	if err != nil {
