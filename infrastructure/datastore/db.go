@@ -82,7 +82,7 @@ func (d *database) convertDataToMap() {
 	pokemons := make(map[int]*model.Pokemon)
 
 	for _, value := range d.data {
-		pokemons[value.Id] = value
+		pokemons[int(value.Id)] = value
 	}
 
 	d.dataMap = pokemons
