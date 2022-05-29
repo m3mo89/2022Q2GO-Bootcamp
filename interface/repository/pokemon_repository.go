@@ -7,6 +7,11 @@ import (
 type PokemonRepository interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
+	FindRemoteById(id int) (*model.RemotePokemon, error)
+}
+
+type PokemonService interface {
+	GetRemotePokemon(id int) (*model.RemotePokemon, error)
 }
 
 type Database interface {
@@ -15,11 +20,12 @@ type Database interface {
 }
 
 type pokemonRepository struct {
-	db Database
+	db      Database
+	service PokemonService
 }
 
-func NewPokemonRepository(db Database) PokemonRepository {
-	return &pokemonRepository{db}
+func NewPokemonRepository(db Database, service PokemonService) PokemonRepository {
+	return &pokemonRepository{db, service}
 }
 
 func (pr *pokemonRepository) FindAll() ([]*model.Pokemon, error) {
@@ -34,6 +40,16 @@ func (pr *pokemonRepository) FindAll() ([]*model.Pokemon, error) {
 
 func (pr *pokemonRepository) FindById(id int) (*model.Pokemon, error) {
 	pokemon, err := pr.db.FindById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pokemon, nil
+}
+
+func (pr *pokemonRepository) FindRemoteById(id int) (*model.RemotePokemon, error) {
+	pokemon, err := pr.service.GetRemotePokemon(id)
 
 	if err != nil {
 		return nil, err
