@@ -13,7 +13,7 @@ import (
 type Database interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
-	Save() (*model.Pokemon, error)
+	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
 func NewDatabase(path string) Database {
@@ -102,9 +102,7 @@ func (d *database) FindById(id int) (*model.Pokemon, error) {
 	return pokemon, nil
 }
 
-func (d *database) Save() (*model.Pokemon, error) {
-
-	pokemon := &model.Pokemon{Id: 1800, Name: "Test"}
+func (d *database) Save(pokemon *model.Pokemon) (*model.Pokemon, error) {
 
 	err := d.writeData(pokemon)
 
