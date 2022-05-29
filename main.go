@@ -8,6 +8,7 @@ import (
 
 	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/datastore"
 	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/router"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/service/pokemon_service"
 	"github.com/m3mo89/2022Q2GO-Bootcamp/registry"
 )
 
@@ -16,7 +17,9 @@ func main() {
 
 	db := datastore.NewDatabase(fileName)
 
-	r := registry.NewRegistry(db)
+	service := pokemon_service.NewPokemonService()
+
+	r := registry.NewRegistry(db, service)
 
 	e := echo.New()
 	e = router.NewRouter(e, r.NewAppController())
