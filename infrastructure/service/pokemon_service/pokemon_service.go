@@ -13,7 +13,7 @@ import (
 const apiUrl = "https://pokeapi.co/api/v2/"
 
 type PokemonService interface {
-	GetRemotePokemon(id int) (*model.RemotePokemon, error)
+	FindRemoteById(id int) (*model.RemotePokemon, error)
 }
 
 type pokemonService struct{}
@@ -22,7 +22,7 @@ func NewPokemonService() PokemonService {
 	return &pokemonService{}
 }
 
-func (*pokemonService) GetRemotePokemon(id int) (*model.RemotePokemon, error) {
+func (*pokemonService) FindRemoteById(id int) (*model.RemotePokemon, error) {
 
 	var pokemon *model.RemotePokemon
 	pokemonId := strconv.Itoa(id)
