@@ -13,7 +13,7 @@ type PokemonRepository interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
 	FindRemoteById(id int) (*model.RemotePokemon, error)
-	Save() (*model.Pokemon, error)
+	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
 type PokemonPresenter interface {
@@ -24,7 +24,7 @@ type PokemonInteractor interface {
 	Get() ([]*model.Pokemon, error)
 	GetById(id int) (*model.Pokemon, error)
 	GetRemoteById(id int) (*model.RemotePokemon, error)
-	Save() (*model.Pokemon, error)
+	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
 func NewPokemonInteractor(r PokemonRepository, p PokemonPresenter) PokemonInteractor {
@@ -58,8 +58,8 @@ func (pk *pokemonInteractor) GetRemoteById(id int) (*model.RemotePokemon, error)
 	return p, nil
 }
 
-func (pk *pokemonInteractor) Save() (*model.Pokemon, error) {
-	p, err := pk.PokemonRepository.Save()
+func (pk *pokemonInteractor) Save(pokemon *model.Pokemon) (*model.Pokemon, error) {
+	p, err := pk.PokemonRepository.Save(pokemon)
 	if err != nil {
 		return nil, err
 	}
