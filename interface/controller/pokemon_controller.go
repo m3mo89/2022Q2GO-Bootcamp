@@ -60,6 +60,8 @@ func (pc *pokemonController) GetRemotePokemonById(c Context) error {
 
 	var p *model.RemotePokemon
 
+	pc.pokemonInteractor.Save()
+
 	p, err := pc.pokemonInteractor.GetRemoteById(id)
 
 	if err != nil {
