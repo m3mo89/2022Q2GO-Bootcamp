@@ -11,7 +11,7 @@ type PokemonRepository interface {
 }
 
 type PokemonService interface {
-	GetRemotePokemon(id int) (*model.RemotePokemon, error)
+	FindRemoteById(id int) (*model.RemotePokemon, error)
 }
 
 type Database interface {
@@ -49,7 +49,7 @@ func (pr *pokemonRepository) FindById(id int) (*model.Pokemon, error) {
 }
 
 func (pr *pokemonRepository) FindRemoteById(id int) (*model.RemotePokemon, error) {
-	pokemon, err := pr.service.GetRemotePokemon(id)
+	pokemon, err := pr.service.FindRemoteById(id)
 
 	if err != nil {
 		return nil, err
