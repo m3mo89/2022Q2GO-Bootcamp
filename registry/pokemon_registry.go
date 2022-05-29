@@ -11,7 +11,7 @@ import (
 type PokemonRepository interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
-	FindRemoteById(id int) (*model.RemotePokemon, error)
+	FindRemoteById(id int) (*model.Pokemon, error)
 	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
