@@ -8,6 +8,7 @@ type PokemonRepository interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
 	FindRemoteById(id int) (*model.RemotePokemon, error)
+	Save() (*model.Pokemon, error)
 }
 
 type PokemonService interface {
@@ -17,6 +18,7 @@ type PokemonService interface {
 type Database interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
+	Save() (*model.Pokemon, error)
 }
 
 type pokemonRepository struct {
@@ -50,6 +52,16 @@ func (pr *pokemonRepository) FindById(id int) (*model.Pokemon, error) {
 
 func (pr *pokemonRepository) FindRemoteById(id int) (*model.RemotePokemon, error) {
 	pokemon, err := pr.service.FindRemoteById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pokemon, nil
+}
+
+func (pr *pokemonRepository) Save() (*model.Pokemon, error) {
+	pokemon, err := pr.db.Save()
 
 	if err != nil {
 		return nil, err
