@@ -15,7 +15,7 @@ type pokemonController struct {
 type PokemonController interface {
 	GetPokemons(c Context) error
 	GetPokemonById(c Context) error
-	//GetPokemonExternalById(c Context) error
+	GetRemotePokemonById(c Context) error
 }
 
 func NewPokemonController(pk interactor.PokemonInteractor) PokemonController {
@@ -44,6 +44,24 @@ func (pc *pokemonController) GetPokemonById(c Context) error {
 	var p *model.Pokemon
 
 	p, err := pc.pokemonInteractor.GetById(id)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, p)
+}
+
+func (pc *pokemonController) GetRemotePokemonById(c Context) error {
+	id, errAtoi := strconv.Atoi(c.Param("id"))
+
+	if errAtoi != nil {
+		return errAtoi
+	}
+
+	var p *model.RemotePokemon
+
+	p, err := pc.pokemonInteractor.GetRemoteById(id)
+
 	if err != nil {
 		return err
 	}
