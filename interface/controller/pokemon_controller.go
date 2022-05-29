@@ -15,6 +15,7 @@ type pokemonController struct {
 type PokemonController interface {
 	GetPokemons(c Context) error
 	GetPokemonById(c Context) error
+	//GetPokemonExternalById(c Context) error
 }
 
 func NewPokemonController(pk interactor.PokemonInteractor) PokemonController {
