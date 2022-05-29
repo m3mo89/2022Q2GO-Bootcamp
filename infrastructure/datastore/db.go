@@ -13,6 +13,7 @@ import (
 type Database interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
+	Save() (*model.Pokemon, error)
 }
 
 func NewDatabase(path string) Database {
@@ -33,7 +34,7 @@ func (d *database) readData() error {
 
 	defer d.convertDataToMap()
 
-	file, err := os.Open(d.path)
+	file, err := os.OpenFile(d.path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 
 	defer func() {
 		err := file.Close()
@@ -52,6 +53,26 @@ func (d *database) readData() error {
 	}
 
 	d.data = records
+
+	return nil
+}
+
+func (d *database) writeData(pokemon *model.Pokemon) error {
+	clientsFile, err := os.OpenFile(d.path, os.O_RDWR|os.O_CREATE, os.ModePerm)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer clientsFile.Close()
+
+	d.data = append(d.data, pokemon)
+
+	err = gocsv.MarshalFile(&d.data, clientsFile)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	return nil
 }
@@ -78,5 +99,18 @@ func (d *database) FindById(id int) (*model.Pokemon, error) {
 	if !ok {
 		return nil, errors.New("the pokemon was not found")
 	}
+	return pokemon, nil
+}
+
+func (d *database) Save() (*model.Pokemon, error) {
+
+	pokemon := &model.Pokemon{Id: 1800, Name: "Test"}
+
+	err := d.writeData(pokemon)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return pokemon, nil
 }
