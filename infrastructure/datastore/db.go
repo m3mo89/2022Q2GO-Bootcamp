@@ -74,6 +74,8 @@ func (d *database) writeData(pokemon *model.Pokemon) error {
 		log.Println(err)
 	}
 
+	d.dataMap[int(pokemon.Id)] = pokemon
+
 	return nil
 }
 
