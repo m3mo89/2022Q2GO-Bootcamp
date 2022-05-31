@@ -8,15 +8,10 @@ import (
 	"github.com/gocarina/gocsv"
 
 	"github.com/m3mo89/2022Q2GO-Bootcamp/domain/model"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/service"
 )
 
-type Database interface {
-	FindAll() ([]*model.Pokemon, error)
-	FindById(id int) (*model.Pokemon, error)
-	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
-}
-
-func NewDatabase(path string) Database {
+func NewDatabase(path string) service.Datasource {
 	db := database{path: path}
 	db.readData()
 

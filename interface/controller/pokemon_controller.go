@@ -58,7 +58,7 @@ func (pc *pokemonController) GetRemotePokemonById(c Context) error {
 		return errAtoi
 	}
 
-	remotePokemon, err := pc.pokemonInteractor.GetRemoteById(id)
+	/*remotePokemon, err := pc.pokemonInteractor.GetRemoteById(id)
 
 	if err != nil {
 		return err
@@ -66,13 +66,13 @@ func (pc *pokemonController) GetRemotePokemonById(c Context) error {
 
 	if remotePokemon == nil {
 		return c.JSON(http.StatusNotFound, "Pokemon not found")
-	}
+	}*/
 
 	pokemon, _ := pc.pokemonInteractor.GetById(id)
 
 	if pokemon == nil {
-		pc.pokemonInteractor.Save(remotePokemon)
+		pc.pokemonInteractor.Save(pokemon)
 	}
 
-	return c.JSON(http.StatusOK, remotePokemon)
+	return c.JSON(http.StatusOK, pokemon)
 }

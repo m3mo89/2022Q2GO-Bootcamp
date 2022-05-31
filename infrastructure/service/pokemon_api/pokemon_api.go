@@ -1,28 +1,34 @@
-package pokemon_service
+package pokemon_api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 
 	"github.com/m3mo89/2022Q2GO-Bootcamp/domain/model"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/service"
 )
 
 const apiUrl = "https://pokeapi.co/api/v2/"
 
-type PokemonService interface {
-	FindRemoteById(id int) (*model.Pokemon, error)
-}
-
 type pokemonService struct{}
 
-func NewPokemonService() PokemonService {
+func NewPokemonService() service.Datasource {
 	return &pokemonService{}
 }
 
-func (*pokemonService) FindRemoteById(id int) (*model.Pokemon, error) {
+func (*pokemonService) FindAll() ([]*model.Pokemon, error) {
+	return nil, errors.New("FindAll method is not supported")
+}
+
+func (*pokemonService) Save(pokemon *model.Pokemon) (*model.Pokemon, error) {
+	return nil, errors.New("Save method is not supported")
+}
+
+func (*pokemonService) FindById(id int) (*model.Pokemon, error) {
 
 	var pokemon *model.Pokemon
 	pokemonId := strconv.Itoa(id)

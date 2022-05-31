@@ -12,7 +12,6 @@ type pokemonInteractor struct {
 type PokemonRepository interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
-	FindRemoteById(id int) (*model.Pokemon, error)
 	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
@@ -23,7 +22,6 @@ type PokemonPresenter interface {
 type PokemonInteractor interface {
 	Get() ([]*model.Pokemon, error)
 	GetById(id int) (*model.Pokemon, error)
-	GetRemoteById(id int) (*model.Pokemon, error)
 	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
@@ -42,15 +40,6 @@ func (pk *pokemonInteractor) Get() ([]*model.Pokemon, error) {
 
 func (pk *pokemonInteractor) GetById(id int) (*model.Pokemon, error) {
 	p, err := pk.PokemonRepository.FindById(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return p, nil
-}
-
-func (pk *pokemonInteractor) GetRemoteById(id int) (*model.Pokemon, error) {
-	p, err := pk.PokemonRepository.FindRemoteById(id)
 	if err != nil {
 		return nil, err
 	}

@@ -11,7 +11,6 @@ import (
 type PokemonRepository interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
-	FindRemoteById(id int) (*model.Pokemon, error)
 	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
@@ -28,7 +27,7 @@ func (r *registry) NewPokemonInteractor() interactor.PokemonInteractor {
 }
 
 func (r *registry) NewPokemonRepository() PokemonRepository {
-	return ir.NewPokemonRepository(r.db, r.service)
+	return ir.NewPokemonRepository(r.local, r.remote)
 }
 
 func (r *registry) NewPokemonPresenter() PokemonPresenter {

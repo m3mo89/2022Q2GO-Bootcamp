@@ -7,31 +7,26 @@ import (
 type PokemonRepository interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
-	FindRemoteById(id int) (*model.Pokemon, error)
 	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
-type PokemonService interface {
-	FindRemoteById(id int) (*model.Pokemon, error)
-}
-
-type Database interface {
+type Datasource interface {
 	FindAll() ([]*model.Pokemon, error)
 	FindById(id int) (*model.Pokemon, error)
 	Save(pokemon *model.Pokemon) (*model.Pokemon, error)
 }
 
 type pokemonRepository struct {
-	db      Database
-	service PokemonService
+	srcLocal  Datasource
+	srcRemote Datasource
 }
 
-func NewPokemonRepository(db Database, service PokemonService) PokemonRepository {
-	return &pokemonRepository{db, service}
+func NewPokemonRepository(local, remote Datasource) PokemonRepository {
+	return &pokemonRepository{local, remote}
 }
 
 func (pr *pokemonRepository) FindAll() ([]*model.Pokemon, error) {
-	pokemons, err := pr.db.FindAll()
+	pokemons, err := pr.srcLocal.FindAll()
 
 	if err != nil {
 		return nil, err
@@ -41,17 +36,7 @@ func (pr *pokemonRepository) FindAll() ([]*model.Pokemon, error) {
 }
 
 func (pr *pokemonRepository) FindById(id int) (*model.Pokemon, error) {
-	pokemon, err := pr.db.FindById(id)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return pokemon, nil
-}
-
-func (pr *pokemonRepository) FindRemoteById(id int) (*model.Pokemon, error) {
-	pokemon, err := pr.service.FindRemoteById(id)
+	pokemon, err := pr.srcLocal.FindById(id)
 
 	if err != nil {
 		return nil, err
@@ -61,7 +46,7 @@ func (pr *pokemonRepository) FindRemoteById(id int) (*model.Pokemon, error) {
 }
 
 func (pr *pokemonRepository) Save(pokemon *model.Pokemon) (*model.Pokemon, error) {
-	pokemon, err := pr.db.Save(pokemon)
+	pokemon, err := pr.srcLocal.Save(pokemon)
 
 	if err != nil {
 		return nil, err
