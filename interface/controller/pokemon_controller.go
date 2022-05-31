@@ -15,7 +15,6 @@ type pokemonController struct {
 type PokemonController interface {
 	GetPokemons(c Context) error
 	GetPokemonById(c Context) error
-	GetRemotePokemonById(c Context) error
 }
 
 func NewPokemonController(pk interactor.PokemonInteractor) PokemonController {
@@ -49,30 +48,4 @@ func (pc *pokemonController) GetPokemonById(c Context) error {
 	}
 
 	return c.JSON(http.StatusOK, p)
-}
-
-func (pc *pokemonController) GetRemotePokemonById(c Context) error {
-	id, errAtoi := strconv.Atoi(c.Param("id"))
-
-	if errAtoi != nil {
-		return errAtoi
-	}
-
-	/*remotePokemon, err := pc.pokemonInteractor.GetRemoteById(id)
-
-	if err != nil {
-		return err
-	}
-
-	if remotePokemon == nil {
-		return c.JSON(http.StatusNotFound, "Pokemon not found")
-	}*/
-
-	pokemon, _ := pc.pokemonInteractor.GetById(id)
-
-	if pokemon == nil {
-		pc.pokemonInteractor.Save(pokemon)
-	}
-
-	return c.JSON(http.StatusOK, pokemon)
 }
