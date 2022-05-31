@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/m3mo89/2022Q2GO-Bootcamp/domain/model"
 )
 
@@ -38,8 +40,26 @@ func (pr *pokemonRepository) FindAll() ([]*model.Pokemon, error) {
 func (pr *pokemonRepository) FindById(id int) (*model.Pokemon, error) {
 	pokemon, err := pr.srcLocal.FindById(id)
 
-	if err != nil {
+	if pokemon != nil && err != nil {
 		return nil, err
+	}
+
+	if pokemon == nil {
+		pokemon, err = pr.srcRemote.FindById(id)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if pokemon == nil {
+			return nil, errors.New("pokemon not found")
+		}
+
+		pokemon, err = pr.srcLocal.Save(pokemon)
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return pokemon, nil
