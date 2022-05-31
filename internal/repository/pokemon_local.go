@@ -1,4 +1,4 @@
-package service
+package repository
 
 import (
 	"errors"
@@ -10,20 +10,20 @@ import (
 	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/entity"
 )
 
-func NewDatabase(path string) Datasource {
-	db := database{path: path}
+func NewPokemonLocal(path string) Datasource {
+	db := pokemonLocal{path: path}
 	db.readData()
 
 	return &db
 }
 
-type database struct {
+type pokemonLocal struct {
 	path    string
 	data    []*entity.Pokemon
 	dataMap map[int]*entity.Pokemon
 }
 
-func (d *database) readData() error {
+func (d *pokemonLocal) readData() error {
 	var records []*entity.Pokemon
 
 	defer d.convertDataToMap()
@@ -51,7 +51,7 @@ func (d *database) readData() error {
 	return nil
 }
 
-func (d *database) writeData(pokemon *entity.Pokemon) error {
+func (d *pokemonLocal) writeData(pokemon *entity.Pokemon) error {
 	clientsFile, err := os.OpenFile(d.path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 
 	if err != nil {
@@ -73,7 +73,7 @@ func (d *database) writeData(pokemon *entity.Pokemon) error {
 	return nil
 }
 
-func (d *database) convertDataToMap() {
+func (d *pokemonLocal) convertDataToMap() {
 
 	pokemons := make(map[int]*entity.Pokemon)
 
@@ -84,11 +84,11 @@ func (d *database) convertDataToMap() {
 	d.dataMap = pokemons
 }
 
-func (d *database) FindAll() ([]*entity.Pokemon, error) {
+func (d *pokemonLocal) FindAll() ([]*entity.Pokemon, error) {
 	return d.data, nil
 }
 
-func (d *database) FindById(id int) (*entity.Pokemon, error) {
+func (d *pokemonLocal) FindById(id int) (*entity.Pokemon, error) {
 
 	pokemon, ok := d.dataMap[id]
 
@@ -98,7 +98,7 @@ func (d *database) FindById(id int) (*entity.Pokemon, error) {
 	return pokemon, nil
 }
 
-func (d *database) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
+func (d *pokemonLocal) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
 
 	err := d.writeData(pokemon)
 

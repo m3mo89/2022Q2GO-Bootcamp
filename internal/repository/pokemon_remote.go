@@ -1,4 +1,4 @@
-package service
+package repository
 
 import (
 	"encoding/json"
@@ -13,21 +13,21 @@ import (
 
 const apiUrl = "https://pokeapi.co/api/v2/"
 
-type pokemonService struct{}
+type pokemonRemote struct{}
 
-func NewPokemonService() Datasource {
-	return &pokemonService{}
+func NewPokemonRemote() Datasource {
+	return &pokemonRemote{}
 }
 
-func (*pokemonService) FindAll() ([]*entity.Pokemon, error) {
+func (*pokemonRemote) FindAll() ([]*entity.Pokemon, error) {
 	return nil, errors.New("FindAll method is not supported")
 }
 
-func (*pokemonService) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
+func (*pokemonRemote) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
 	return nil, errors.New("Save method is not supported")
 }
 
-func (*pokemonService) FindById(id int) (*entity.Pokemon, error) {
+func (*pokemonRemote) FindById(id int) (*entity.Pokemon, error) {
 
 	var pokemon *entity.Pokemon
 	pokemonId := strconv.Itoa(id)

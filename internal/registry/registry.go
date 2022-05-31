@@ -3,19 +3,19 @@ package registry
 import (
 	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/controller"
 
-	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/service"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/repository"
 )
 
 type registry struct {
-	local  service.Datasource
-	remote service.Datasource
+	local  repository.Datasource
+	remote repository.Datasource
 }
 
 type Registry interface {
 	NewAppController() controller.AppController
 }
 
-func NewRegistry(local service.Datasource, remote service.Datasource) Registry {
+func NewRegistry(local repository.Datasource, remote repository.Datasource) Registry {
 	return &registry{local, remote}
 }
 

@@ -1,4 +1,4 @@
-package repository
+package service
 
 import (
 	"errors"
@@ -6,10 +6,9 @@ import (
 	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/entity"
 )
 
-type PokemonRepository interface {
-	FindAll() ([]*entity.Pokemon, error)
-	FindById(id int) (*entity.Pokemon, error)
-	Save(pokemon *entity.Pokemon) (*entity.Pokemon, error)
+type PokemonService interface {
+	GetAll() ([]*entity.Pokemon, error)
+	GetById(id int) (*entity.Pokemon, error)
 }
 
 type Datasource interface {
@@ -18,16 +17,16 @@ type Datasource interface {
 	Save(pokemon *entity.Pokemon) (*entity.Pokemon, error)
 }
 
-type pokemonRepository struct {
+type pokemonService struct {
 	srcLocal  Datasource
 	srcRemote Datasource
 }
 
-func NewPokemonRepository(local, remote Datasource) PokemonRepository {
-	return &pokemonRepository{local, remote}
+func NewPokemonService(local, remote Datasource) PokemonService {
+	return &pokemonService{local, remote}
 }
 
-func (pr *pokemonRepository) FindAll() ([]*entity.Pokemon, error) {
+func (pr *pokemonService) GetAll() ([]*entity.Pokemon, error) {
 	pokemons, err := pr.srcLocal.FindAll()
 
 	if err != nil {
@@ -37,7 +36,7 @@ func (pr *pokemonRepository) FindAll() ([]*entity.Pokemon, error) {
 	return pokemons, nil
 }
 
-func (pr *pokemonRepository) FindById(id int) (*entity.Pokemon, error) {
+func (pr *pokemonService) GetById(id int) (*entity.Pokemon, error) {
 	pokemon, err := pr.srcLocal.FindById(id)
 
 	if pokemon != nil && err != nil {
@@ -60,16 +59,6 @@ func (pr *pokemonRepository) FindById(id int) (*entity.Pokemon, error) {
 		if err != nil {
 			return nil, err
 		}
-	}
-
-	return pokemon, nil
-}
-
-func (pr *pokemonRepository) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
-	pokemon, err := pr.srcLocal.Save(pokemon)
-
-	if err != nil {
-		return nil, err
 	}
 
 	return pokemon, nil

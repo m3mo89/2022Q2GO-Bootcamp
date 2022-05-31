@@ -8,13 +8,12 @@ import (
 )
 
 type pokemonController struct {
-	pokemonRepository PokemonRepository
+	pokemonService PokemonService
 }
 
-type PokemonRepository interface {
-	FindAll() ([]*entity.Pokemon, error)
-	FindById(id int) (*entity.Pokemon, error)
-	Save(pokemon *entity.Pokemon) (*entity.Pokemon, error)
+type PokemonService interface {
+	GetAll() ([]*entity.Pokemon, error)
+	GetById(id int) (*entity.Pokemon, error)
 }
 
 type PokemonController interface {
@@ -22,14 +21,14 @@ type PokemonController interface {
 	GetPokemonById(c Context) error
 }
 
-func NewPokemonController(repo PokemonRepository) PokemonController {
-	return &pokemonController{repo}
+func NewPokemonController(service PokemonService) PokemonController {
+	return &pokemonController{service}
 }
 
 func (pc *pokemonController) GetPokemons(c Context) error {
 	var p []*entity.Pokemon
 
-	p, err := pc.pokemonRepository.FindAll()
+	p, err := pc.pokemonService.GetAll()
 	if err != nil {
 		return err
 	}
@@ -47,7 +46,7 @@ func (pc *pokemonController) GetPokemonById(c Context) error {
 
 	var p *entity.Pokemon
 
-	p, err := pc.pokemonRepository.FindById(id)
+	p, err := pc.pokemonService.GetById(id)
 	if err != nil {
 		return err
 	}

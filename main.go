@@ -7,16 +7,16 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/registry"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/repository"
 	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/router"
-	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/service"
 )
 
 func main() {
 	fileName := "data/pokemon.csv"
 
-	local := service.NewDatabase(fileName)
+	local := repository.NewPokemonLocal(fileName)
 
-	remote := service.NewPokemonService()
+	remote := repository.NewPokemonRemote()
 
 	r := registry.NewRegistry(local, remote)
 
