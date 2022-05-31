@@ -4,12 +4,17 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/m3mo89/2022Q2GO-Bootcamp/domain/model"
-	"github.com/m3mo89/2022Q2GO-Bootcamp/usecase/interactor"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/entity"
 )
 
 type pokemonController struct {
-	pokemonInteractor interactor.PokemonInteractor
+	pokemonRepository PokemonRepository
+}
+
+type PokemonRepository interface {
+	FindAll() ([]*entity.Pokemon, error)
+	FindById(id int) (*entity.Pokemon, error)
+	Save(pokemon *entity.Pokemon) (*entity.Pokemon, error)
 }
 
 type PokemonController interface {
@@ -17,14 +22,14 @@ type PokemonController interface {
 	GetPokemonById(c Context) error
 }
 
-func NewPokemonController(pk interactor.PokemonInteractor) PokemonController {
-	return &pokemonController{pk}
+func NewPokemonController(repo PokemonRepository) PokemonController {
+	return &pokemonController{repo}
 }
 
 func (pc *pokemonController) GetPokemons(c Context) error {
-	var p []*model.Pokemon
+	var p []*entity.Pokemon
 
-	p, err := pc.pokemonInteractor.Get()
+	p, err := pc.pokemonRepository.FindAll()
 	if err != nil {
 		return err
 	}
@@ -40,9 +45,9 @@ func (pc *pokemonController) GetPokemonById(c Context) error {
 		return errAtoi
 	}
 
-	var p *model.Pokemon
+	var p *entity.Pokemon
 
-	p, err := pc.pokemonInteractor.GetById(id)
+	p, err := pc.pokemonRepository.FindById(id)
 	if err != nil {
 		return err
 	}

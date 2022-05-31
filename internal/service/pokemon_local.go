@@ -1,4 +1,4 @@
-package datastore
+package service
 
 import (
 	"errors"
@@ -7,11 +7,10 @@ import (
 
 	"github.com/gocarina/gocsv"
 
-	"github.com/m3mo89/2022Q2GO-Bootcamp/domain/model"
-	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/service"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/entity"
 )
 
-func NewDatabase(path string) service.Datasource {
+func NewDatabase(path string) Datasource {
 	db := database{path: path}
 	db.readData()
 
@@ -20,12 +19,12 @@ func NewDatabase(path string) service.Datasource {
 
 type database struct {
 	path    string
-	data    []*model.Pokemon
-	dataMap map[int]*model.Pokemon
+	data    []*entity.Pokemon
+	dataMap map[int]*entity.Pokemon
 }
 
 func (d *database) readData() error {
-	var records []*model.Pokemon
+	var records []*entity.Pokemon
 
 	defer d.convertDataToMap()
 
@@ -52,7 +51,7 @@ func (d *database) readData() error {
 	return nil
 }
 
-func (d *database) writeData(pokemon *model.Pokemon) error {
+func (d *database) writeData(pokemon *entity.Pokemon) error {
 	clientsFile, err := os.OpenFile(d.path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 
 	if err != nil {
@@ -76,7 +75,7 @@ func (d *database) writeData(pokemon *model.Pokemon) error {
 
 func (d *database) convertDataToMap() {
 
-	pokemons := make(map[int]*model.Pokemon)
+	pokemons := make(map[int]*entity.Pokemon)
 
 	for _, value := range d.data {
 		pokemons[int(value.Id)] = value
@@ -85,11 +84,11 @@ func (d *database) convertDataToMap() {
 	d.dataMap = pokemons
 }
 
-func (d *database) FindAll() ([]*model.Pokemon, error) {
+func (d *database) FindAll() ([]*entity.Pokemon, error) {
 	return d.data, nil
 }
 
-func (d *database) FindById(id int) (*model.Pokemon, error) {
+func (d *database) FindById(id int) (*entity.Pokemon, error) {
 
 	pokemon, ok := d.dataMap[id]
 
@@ -99,7 +98,7 @@ func (d *database) FindById(id int) (*model.Pokemon, error) {
 	return pokemon, nil
 }
 
-func (d *database) Save(pokemon *model.Pokemon) (*model.Pokemon, error) {
+func (d *database) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
 
 	err := d.writeData(pokemon)
 

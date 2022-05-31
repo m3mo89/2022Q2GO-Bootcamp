@@ -1,9 +1,9 @@
 package registry
 
 import (
-	"github.com/m3mo89/2022Q2GO-Bootcamp/interface/controller"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/controller"
 
-	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/service"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/service"
 )
 
 type registry struct {

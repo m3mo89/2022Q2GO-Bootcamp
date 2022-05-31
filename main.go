@@ -6,18 +6,17 @@ import (
 
 	"github.com/labstack/echo"
 
-	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/router"
-	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/service/datastore"
-	"github.com/m3mo89/2022Q2GO-Bootcamp/infrastructure/service/pokemon_api"
-	"github.com/m3mo89/2022Q2GO-Bootcamp/registry"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/registry"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/router"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/service"
 )
 
 func main() {
-	fileName := "infrastructure/data/pokemon.csv"
+	fileName := "data/pokemon.csv"
 
-	local := datastore.NewDatabase(fileName)
+	local := service.NewDatabase(fileName)
 
-	remote := pokemon_api.NewPokemonService()
+	remote := service.NewPokemonService()
 
 	r := registry.NewRegistry(local, remote)
 

@@ -1,4 +1,4 @@
-package model
+package entity
 
 type Pokemon struct {
 	Id                     uint64 `json:"id" csv:"id"`
