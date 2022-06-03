@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/m3mo89/2022Q2GO-Bootcamp/interface/controller"
+	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/controller"
 )
 
 func NewRouter(e *echo.Echo, c controller.AppController) *echo.Echo {
