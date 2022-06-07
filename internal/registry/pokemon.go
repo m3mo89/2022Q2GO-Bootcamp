@@ -9,6 +9,7 @@ import (
 type PokemonService interface {
 	GetAll() ([]*entity.Pokemon, error)
 	GetById(id int) (*entity.Pokemon, error)
+	GetAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error)
 }
 
 func (r *registry) NewPokemonController() controller.PokemonController {
