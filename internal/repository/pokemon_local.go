@@ -3,7 +3,9 @@ package repository
 import (
 	"errors"
 	"log"
+	"math"
 	"os"
+	"sync"
 
 	"github.com/gocarina/gocsv"
 
@@ -107,4 +109,55 @@ func (d *pokemonLocal) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
 	}
 
 	return pokemon, nil
+}
+
+func (d *pokemonLocal) FindAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error) {
+
+	jobs := make(chan entity.Pokemon)
+	results := make(chan entity.Pokemon)
+
+	numWorkers := int(math.Ceil(float64(items) / float64(items_per_workers)))
+
+	wg := sync.WaitGroup{}
+
+	wg.Add(numWorkers + 1)
+
+	for w := 0; w < numWorkers; w++ {
+		go func(workerID int, jobs <-chan entity.Pokemon, results chan<- entity.Pokemon, wgc *sync.WaitGroup, items_per_workers int) {
+			defer wgc.Done()
+
+			for p := range jobs {
+
+				if item_type == "even" && p.Id%2 == 0 {
+					results <- p
+				} else if item_type == "odd" && p.Id%2 != 0 {
+					results <- p
+				} else {
+					results <- entity.Pokemon{}
+				}
+			}
+		}(w, jobs, results, &wg, items_per_workers)
+	}
+
+	var records []*entity.Pokemon
+
+	go func() {
+		defer wg.Done()
+		for i := 0; i < len(d.data)-1; i++ {
+			result := <-results
+
+			if result.Id > 0 {
+				records = append(records, &result)
+			}
+		}
+	}()
+
+	for i := 0; i < len(d.data)-1; i++ {
+		jobs <- *d.data[i]
+	}
+	close(jobs)
+
+	wg.Wait()
+
+	return records, nil
 }
