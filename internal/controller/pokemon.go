@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -14,11 +15,13 @@ type pokemonController struct {
 type PokemonService interface {
 	GetAll() ([]*entity.Pokemon, error)
 	GetById(id int) (*entity.Pokemon, error)
+	GetAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error)
 }
 
 type PokemonController interface {
 	GetPokemons(c Context) error
 	GetPokemonById(c Context) error
+	GetPokemonsWithWorker(c Context) error
 }
 
 func NewPokemonController(service PokemonService) PokemonController {
@@ -47,6 +50,34 @@ func (pc *pokemonController) GetPokemonById(c Context) error {
 	var p *entity.Pokemon
 
 	p, err := pc.pokemonService.GetById(id)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, p)
+}
+
+func (pc *pokemonController) GetPokemonsWithWorker(c Context) error {
+
+	item_type := c.Param("type")
+
+	if item_type != "odd" && item_type != "even" {
+		return errors.New("type not supported")
+	}
+
+	items, err := strconv.Atoi(c.Param("items"))
+
+	if err != nil {
+		return err
+	}
+
+	items_per_workers, err := strconv.Atoi(c.Param("items_per_workers"))
+
+	if err != nil {
+		return err
+	}
+
+	p, err := pc.pokemonService.GetAllWithWorker(item_type, items, items_per_workers)
 	if err != nil {
 		return err
 	}
