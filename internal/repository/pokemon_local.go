@@ -166,9 +166,6 @@ func (d *pokemonLocal) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
 
 func (d *pokemonLocal) FindAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error) {
 
-	jobs := make(chan entity.Pokemon)
-	results := make(chan entity.Pokemon, items)
-
 	items_availables := int(math.Ceil(float64(len(d.data)) / 2.0))
 
 	if items_availables <= 0 {
@@ -178,6 +175,9 @@ func (d *pokemonLocal) FindAllWithWorker(item_type string, items, items_per_work
 	if items_availables < items {
 		items = items_availables
 	}
+
+	jobs := make(chan entity.Pokemon)
+	results := make(chan entity.Pokemon, items)
 
 	numJobs := items * 2
 	numWorkers := int(math.Ceil(float64(numJobs) / float64(items_per_workers)))
