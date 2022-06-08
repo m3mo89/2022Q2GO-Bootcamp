@@ -71,14 +71,18 @@ func (pc *pokemonController) GetPokemonsWithWorker(c Context) error {
 		return err
 	}
 
+	if items <= 0 {
+		return errors.New("items must be greater than zero")
+	}
+
 	items_per_workers, err := strconv.Atoi(c.Param("items_per_workers"))
 
 	if err != nil {
 		return err
 	}
 
-	if items <= 0 || items_per_workers <= 0 {
-		return errors.New("items and items per worker must be greater than zero")
+	if items_per_workers <= 0 {
+		return errors.New("items per worker must be greater than zero")
 	}
 
 	p, err := pc.pokemonService.GetAllWithWorker(item_type, items, items_per_workers)
