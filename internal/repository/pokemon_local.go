@@ -86,6 +86,59 @@ func (d *pokemonLocal) convertDataToMap() {
 	d.dataMap = pokemons
 }
 
+func createWorkerPool(jobs <-chan entity.Pokemon, results chan<- entity.Pokemon, wg *sync.WaitGroup, item_type string, items_per_workers, numWorkers int) {
+	wg.Add(numWorkers)
+
+	for w := 0; w < numWorkers; w++ {
+		go worker(jobs, results, wg, item_type, w, items_per_workers)
+	}
+}
+
+func worker(jobs <-chan entity.Pokemon, results chan<- entity.Pokemon, wg *sync.WaitGroup, item_type string, workerID, items_per_workers int) {
+	defer wg.Done()
+
+	count := 1
+
+	for count <= items_per_workers {
+		p, ok := <-jobs
+		if !ok {
+			break
+		}
+		count++
+
+		if !(item_type == "even" && p.Id%2 == 0) && !(item_type == "odd" && p.Id%2 != 0) {
+			continue
+		}
+
+		results <- p
+	}
+}
+
+func allocate(jobs chan<- entity.Pokemon, data []*entity.Pokemon, numJobs int) {
+	for ix, p := range data {
+		if ix >= numJobs {
+			break
+		}
+
+		jobs <- *p
+	}
+}
+
+func result(results <-chan entity.Pokemon) []*entity.Pokemon {
+	var records []*entity.Pokemon
+
+	for {
+		p, ok := <-results
+		if !ok {
+			break
+		}
+
+		records = append(records, &p)
+	}
+
+	return records
+}
+
 func (d *pokemonLocal) FindAll() ([]*entity.Pokemon, error) {
 	return d.data, nil
 }
@@ -114,50 +167,24 @@ func (d *pokemonLocal) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
 func (d *pokemonLocal) FindAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error) {
 
 	jobs := make(chan entity.Pokemon)
-	results := make(chan entity.Pokemon)
+	results := make(chan entity.Pokemon, items)
 
-	numWorkers := int(math.Ceil(float64(items) / float64(items_per_workers)))
+	numJobs := items * 2
+	numWorkers := int(math.Ceil(float64(numJobs) / float64(items_per_workers)))
 
 	wg := sync.WaitGroup{}
 
-	wg.Add(numWorkers + 1)
+	createWorkerPool(jobs, results, &wg, item_type, items_per_workers, numWorkers)
 
-	for w := 0; w < numWorkers; w++ {
-		go func(workerID int, jobs <-chan entity.Pokemon, results chan<- entity.Pokemon, wgc *sync.WaitGroup, items_per_workers int) {
-			defer wgc.Done()
+	allocate(jobs, d.data, numJobs)
 
-			for p := range jobs {
-
-				if item_type == "even" && p.Id%2 == 0 {
-					results <- p
-				} else if item_type == "odd" && p.Id%2 != 0 {
-					results <- p
-				} else {
-					results <- entity.Pokemon{}
-				}
-			}
-		}(w, jobs, results, &wg, items_per_workers)
-	}
-
-	var records []*entity.Pokemon
-
-	go func() {
-		defer wg.Done()
-		for i := 0; i < len(d.data)-1; i++ {
-			result := <-results
-
-			if result.Id > 0 {
-				records = append(records, &result)
-			}
-		}
-	}()
-
-	for i := 0; i < len(d.data)-1; i++ {
-		jobs <- *d.data[i]
-	}
 	close(jobs)
 
 	wg.Wait()
+
+	close(results)
+
+	records := result(results)
 
 	return records, nil
 }
