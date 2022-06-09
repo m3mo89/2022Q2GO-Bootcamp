@@ -2,7 +2,7 @@ package testdata
 
 import "github.com/m3mo89/2022Q2GO-Bootcamp/internal/entity"
 
-var Pokemons = []entity.Pokemon{
+var Pokemons = []*entity.Pokemon{
 	{Id: 8, Name: "wartortle", Height: 10, IsDefault: true, Order: 11, Weight: 225, BaseExperience: 142, LocationAreaEncounters: "https://pokeapi.co/api/v2/pokemon/8/encounters"},
 	{Id: 1, Name: "bulbasaur", Height: 7, IsDefault: true, Order: 1, Weight: 69, BaseExperience: 64, LocationAreaEncounters: "https://pokeapi.co/api/v2/pokemon/1/encounters"},
 	{Id: 2, Name: "ivysaur", Height: 10, IsDefault: true, Order: 2, Weight: 130, BaseExperience: 142, LocationAreaEncounters: "https://pokeapi.co/api/v2/pokemon/2/encounters"},
