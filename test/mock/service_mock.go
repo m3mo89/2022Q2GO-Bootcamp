@@ -26,7 +26,21 @@ func (service *mockPokemonService) GetAll() ([]*entity.Pokemon, error) {
 }
 
 func (service *mockPokemonService) GetById(id int) (*entity.Pokemon, error) {
-	log.Printf("Data Source Mock: Find pokemon with id %d", id)
+	log.Printf("Pokemon Service Mock: Get pokemon by id %d", id)
 	arg := service.Called(id)
-	return arg.Get(0).(*entity.Pokemon), arg.Error(1)
+
+	if arg.Get(0) != nil {
+		return arg.Get(0).(*entity.Pokemon), arg.Error(1)
+	}
+	return nil, arg.Error(1)
+}
+
+func (service *mockPokemonService) GetAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error) {
+	log.Printf("Pokemon Service Mock: Get all the pokemons usig worker pool %s %d %d", item_type, items, items_per_workers)
+	arg := service.Called(item_type, items, items_per_workers)
+
+	if arg.Get(0) != nil {
+		return arg.Get(0).([]*entity.Pokemon), arg.Error(1)
+	}
+	return nil, arg.Error(1)
 }
