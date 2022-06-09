@@ -49,7 +49,7 @@ func TestPokemonService_GetById(t *testing.T) {
 			&entity.Pokemon{Id: 6, Name: "charizard", Height: 17, IsDefault: true, Order: 7, Weight: 905, BaseExperience: 267, LocationAreaEncounters: "https://pokeapi.co/api/v2/pokemon/6/encounters"},
 			nil,
 			"mock",
-			&testdata.Pokemons[6],
+			testdata.Pokemons[6],
 			nil,
 		},
 	}
