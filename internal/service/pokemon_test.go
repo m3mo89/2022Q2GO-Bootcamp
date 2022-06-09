@@ -1,37 +1,14 @@
 package service
 
 import (
-	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 
 	"github.com/m3mo89/2022Q2GO-Bootcamp/internal/entity"
+	customMock "github.com/m3mo89/2022Q2GO-Bootcamp/test/mock"
 	"github.com/m3mo89/2022Q2GO-Bootcamp/test/testdata"
 )
-
-type mockDatasource struct {
-	mock.Mock
-}
-
-func (datasource *mockDatasource) FindAll() ([]*entity.Pokemon, error) {
-	log.Printf("Data Source Mock: Find all the pokemons")
-	arg := datasource.Called()
-	return arg.Get(0).([]*entity.Pokemon), arg.Error(1)
-}
-
-func (datasource *mockDatasource) FindById(id int) (*entity.Pokemon, error) {
-	log.Printf("Data Source Mock: Find pokemon with id %d", id)
-	arg := datasource.Called(id)
-	return arg.Get(0).(*entity.Pokemon), arg.Error(1)
-}
-
-func (datasource *mockDatasource) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
-	log.Printf("Data Source Mock: Save Pokemon %+v", pokemon)
-	arg := datasource.Called(pokemon)
-	return arg.Get(0).(*entity.Pokemon), arg.Error(0)
-}
 
 func TestPokemonService_GetById(t *testing.T) {
 	var testCases = []struct {
@@ -61,8 +38,8 @@ func TestPokemonService_GetById(t *testing.T) {
 
 			switch testCase.repositoryLayer {
 			case "mock":
-				local := &mockDatasource{}
-				remote := &mockDatasource{}
+				local := customMock.NewDatasourceMock()
+				remote := customMock.NewDatasourceMock()
 				local.On("FindById", testCase.id).Return(testCase.repositoryResponse, testCase.repositoryError)
 				service = NewPokemonService(local, remote)
 			default:
