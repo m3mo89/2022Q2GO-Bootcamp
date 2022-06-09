@@ -24,7 +24,3 @@ var Pokemons = []*entity.Pokemon{
 	{Id: 19, Name: "rattata", Height: 3, IsDefault: true, Order: 25, Weight: 35, BaseExperience: 51, LocationAreaEncounters: "https://pokeapi.co/api/v2/pokemon/19/encounters"},
 	{Id: 20, Name: "raticate", Height: 7, IsDefault: true, Order: 27, Weight: 185, BaseExperience: 145, LocationAreaEncounters: "https://pokeapi.co/api/v2/pokemon/20/encounters"},
 }
-
-func GetPokemon() *entity.Pokemon {
-	return &entity.Pokemon{Id: 8, Name: "wartortle", Height: 10, IsDefault: true, Order: 11, Weight: 225, BaseExperience: 142, LocationAreaEncounters: "https://pokeapi.co/api/v2/pokemon/8/encounters"}
-}
