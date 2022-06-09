@@ -9,12 +9,14 @@ import (
 type PokemonService interface {
 	GetAll() ([]*entity.Pokemon, error)
 	GetById(id int) (*entity.Pokemon, error)
+	GetAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error)
 }
 
 type Datasource interface {
 	FindAll() ([]*entity.Pokemon, error)
 	FindById(id int) (*entity.Pokemon, error)
 	Save(pokemon *entity.Pokemon) (*entity.Pokemon, error)
+	FindAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error)
 }
 
 type pokemonService struct {
@@ -62,4 +64,14 @@ func (pr *pokemonService) GetById(id int) (*entity.Pokemon, error) {
 	}
 
 	return pokemon, nil
+}
+
+func (pr *pokemonService) GetAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error) {
+	pokemons, err := pr.srcLocal.FindAllWithWorker(item_type, items, items_per_workers)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pokemons, nil
 }

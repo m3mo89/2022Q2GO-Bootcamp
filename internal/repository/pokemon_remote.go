@@ -27,6 +27,10 @@ func (*pokemonRemote) Save(pokemon *entity.Pokemon) (*entity.Pokemon, error) {
 	return nil, errors.New("Save method is not supported")
 }
 
+func (*pokemonRemote) FindAllWithWorker(item_type string, items, items_per_workers int) ([]*entity.Pokemon, error) {
+	return nil, errors.New("FindAllWithWorker method is not supported")
+}
+
 func (*pokemonRemote) FindById(id int) (*entity.Pokemon, error) {
 
 	var pokemon *entity.Pokemon
